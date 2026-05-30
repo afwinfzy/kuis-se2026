@@ -241,12 +241,9 @@ window.onload = function() {
             startBtn.className = "w-full bg-slate-400 text-white font-bold py-3.5 px-4 rounded-xl cursor-not-allowed flex items-center justify-center";
             startBtn.innerHTML = `<span>Pendaftaran Tes Ditutup</span>`;
             
-            alert("Maaf, tidak ada jadwal evaluasi yang aktif saat ini.\n\n" +
-                  "Jadwal Resmi:\n" +
-                  "- Pretest: 3 Juni 2026 (06:30 - 08:30 WITA)\n" +
-                  "- Pendalaman: 5 Juni 2026 (16:00 - 18:00 WITA)\n" +
-                  "- Posttest: 5 Juni 2026 (18:00 - 19:00 WITA)");
-            return; // Stop script agar tidak melakukan fetch data soal
+            // DIUBAH: Panggil modal custom, bukan alert bawaan browser lagi
+            document.getElementById('custom-alert-modal').classList.remove('hidden');
+            return; 
         }
         // === END SISTEM GERBANG TANGGAL & JADWAL ===
 
@@ -543,7 +540,48 @@ window.onload = function() {
             console.error(err);
         });
     }
+    function tutupModalJadwal() {
+        document.getElementById('custom-alert-modal').classList.add('hidden');
+    }
 </script>
-
+<div id="custom-alert-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="bg-slate-950 text-white px-6 py-4 flex items-center space-x-3">
+                <div class="bg-terakota-500 text-white p-2 rounded-xl">
+                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold tracking-wide uppercase text-slate-200">Informasi Jadwal Evaluasi</h3>
+                    <p class="text-[10px] text-slate-400">Badan Pusat Statistik Kab. Minahasa Selatan</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-sm font-semibold text-slate-900 mb-4 leading-relaxed flex items-start gap-2">
+                    <i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5 text-base flex-shrink-0"></i>
+                    <span>Maaf, tidak ada jadwal evaluasi yang aktif saat ini.</span>
+                </p>
+                
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3 text-xs text-slate-600 font-medium">
+                    <p class="font-bold text-slate-900 tracking-wider uppercase text-[10px] text-terakota-500 mb-1">Jadwal Resmi Pelaksanaan:</p>
+                    <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
+                        <span>• Pretest</span>
+                        <span class="font-bold text-slate-800">3 Juni 2026 (06:30 - 08:30)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
+                        <span>• Pendalaman</span>
+                        <span class="font-bold text-slate-800">5 Juni 2026 (16:00 - 18:00)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1">
+                        <span>• Posttest</span>
+                        <span class="font-bold text-slate-800">5 Juni 2026 (18:00 - 19:00)</span>
+                    </div>
+                </div>
+                
+                <button onclick="tutupModalJadwal()" class="w-full mt-5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
+                    Saya Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 
