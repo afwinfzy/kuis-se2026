@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Kuis Sensus Ekonomi 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        terakota: {
+                            50: '#fef4f2',
+                            100: '#fde7e2',
+                            500: '#e0533c', // Warna Utama SE2026
+                            600: '#c6412b',
+                            700: '#a6321f',
+                        },
+                        bps: {
+                            navy: '#043263',
+                            blue: '#00a2e9'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 antialiased flex flex-col justify-between">
+
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-terakota-500 text-white p-2.5 rounded-xl shadow-md shadow-terakota-500/20">
+                    <i class="fa-solid fa-chart-line fa-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-tight">Sensus Ekonomi 2026</h1>
+                    <p class="text-xs font-semibold text-terakota-500 tracking-wider uppercase">Aplikasi Kuis & Pendalaman</p>
+                </div>
+            </div>
+            <div class="hidden sm:flex items-center space-x-2 text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full font-medium">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Server BPS Terkoneksi</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-5xl w-full mx-auto px-4 py-6 flex flex-col justify-center">
+        
+        <div id="identitas-page" class="max-w-md w-full mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 transition-all duration-300 transform hover:scale-[1.01]">
+            <div class="text-center mb-8">
+                <span class="bg-terakota-50 text-terakota-600 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest">Evaluasi Petugas</span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-2">Selamat Datang</h2>
+                <p class="text-sm text-slate-500 mt-1">Silakan lengkapi identitas Anda sebelum memulai kuis pengerjaan.</p>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5" for="nama">Nama Lengkap</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-regular fa-user"></i>
+                        </span>
+                        <input type="text" id="nama" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terakota-500/20 focus:border-terakota-500 text-slate-900 font-medium placeholder-slate-400 transition-all" placeholder="Ketik nama lengkap Anda..." required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1.5" for="jenis_tes">Jenis Evaluasi / Tes</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-regular fa-file-lines"></i>
+                        </span>
+                        <select id="jenis_tes" class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-terakota-500/20 focus:border-terakota-500 text-slate-900 font-medium cursor-pointer transition-all appearance-none">
+                            <option value="Pretest">Pretest (15 Menit)</option>
+                            <option value="Posttest">Posttest (15 Menit)</option>
+                            <option value="Pendalaman">Pendalaman Materi (45 Menit)</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button id="start-btn" onclick="startQuiz()" class="w-full bg-terakota-500 hover:bg-terakota-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-terakota-500/30 transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-terakota-500/50 active:scale-[0.98] flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-notch animate-spin mr-2" id="loading-icon"></i>
+                    <span>Memuat Soal...</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-page" class="hidden flex-col md:flex-row gap-6 items-start w-full">
+            
+            <div class="flex-grow w-full md:w-2/3 bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-regular fa-id-badge text-terakota-100"></i>
+                        <span id="info-tes" class="text-sm font-semibold tracking-wide text-slate-200">Loading...</span>
+                    </div>
+                    <div class="bg-terakota-500/20 text-terakota-100 border border-terakota-500/30 px-3 py-1 rounded-lg font-bold text-base flex items-center space-x-2 tracking-wider shadow-inner">
+                        <i class="fa-regular fa-clock animate-pulse text-terakota-400"></i>
+                        <span id="timer">00:00</span>
+                    </div>
+                </div>
+
+                <div class="h-1.5 w-full bg-slate-100">
+                    <div id="progress" class="h-full bg-terakota-500 transition-all duration-300 shadow shadow-terakota-500/50" style="width: 0%"></div>
+                </div>
+
+                <div class="p-6 sm:p-8 min-h-[250px]">
+                    <div id="question-container"></div>
+                </div>
+
+                <div class="bg-slate-50 px-6 py-4 border-t border-slate-100 flex flex-wrap gap-3 justify-between items-center">
+                    <button id="prev-btn" onclick="prevQuestion()" class="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-100 disabled:opacity-50 text-slate-700 font-bold rounded-xl transition-all flex items-center space-x-2 shadow-sm text-sm disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-arrow-left"></i> <span>Sebelumnya</span>
+                    </button>
+                    
+                    <button id="ragu-btn" onclick="toggleRaguRagu()" class="px-5 py-2.5 bg-amber-50 border border-amber-200 text-amber-700 hover:bg-amber-100 font-bold rounded-xl transition-all flex items-center space-x-2 shadow-sm text-sm">
+                        <i class="fa-regular fa-flag"></i> <span>Ragu-Ragu</span>
+                    </button>
+                    
+                    <button id="next-btn" onclick="nextQuestion()" class="px-6 py-2.5 bg-terakota-500 hover:bg-terakota-600 text-white font-bold rounded-xl transition-all flex items-center space-x-2 shadow-md shadow-terakota-500/20 text-sm">
+                        <span>Selanjutnya</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/3 bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-6">
+                <h3 class="text-sm font-bold text-slate-800 tracking-wider uppercase mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-grip text-slate-400"></i>
+                    <span>Navigasi Soal</span>
+                </h3>
+                
+                <div class="grid grid-cols-5 gap-2.5" id="grid-nomor"></div>
+                
+                <div class="mt-6 pt-5 border-t border-slate-100 space-y-4">
+                    <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-500">
+                        <div class="flex items-center space-x-2"><span class="w-3.5 h-3.5 rounded bg-emerald-500"></span> <span>Terjawab</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3.5 h-3.5 rounded bg-amber-400"></span> <span>Ragu-Ragu</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3.5 h-3.5 rounded border border-slate-300 bg-white"></span> <span>Belum Diisi</span></div>
+                        <div class="flex items-center space-x-2"><span class="w-3.5 h-3.5 rounded ring-2 ring-slate-900 bg-slate-100"></span> <span>Aktif</span></div>
+                    </div>
+
+                    <button onclick="konfirmasiSelesai()" class="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all active:scale-[0.98] flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span>Selesai Ujian</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-page" class="hidden max-w-md w-full mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 p-8 text-center transition-all duration-500">
+            <div class="w-20 h-20 bg-terakota-50 rounded-full flex items-center justify-center mx-auto text-terakota-500 mb-6 shadow-inner animate-bounce">
+                <i class="fa-solid fa-trophy fa-2xl"></i>
+            </div>
+            <h2 id="result-title" class="text-2xl font-bold text-slate-900">Selesai!</h2>
+            <div class="my-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p id="status-text" class="text-sm font-medium text-slate-600 leading-relaxed">
+                    Jawaban Anda sedang dikirim dan diproses aman oleh sistem database...
+                </p>
+            </div>
+            <p class="text-xs text-slate-400">Terima kasih telah berpartisipasi aktif dalam kegiatan peningkatan kapabilitas data SE2026.</p>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 text-xs font-medium border-t border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>&copy; 2026 Badan Pusat Statistik Kabupaten Minahasa Selatan</div>
+            <div class="text-slate-500 text-[11px]">Sensus Ekonomi 2026 • Struktur Data Otomatis v2.3</div>
+        </div>
+    </footer>
+
+<script>
+    // ⚠️ GANTI DENGAN URL WEB APP BARU HASIL DEPLOY APPS SCRIPT ANDA
+    const API_URL = "https://script.google.com/macros/s/AKfycbwuTWWfiNe0ncA6arbDp1w1mb_21X9UTo-O3_Pr_feraaeyvl8D2Ncz1qAb8AOtnPE/exec"; 
+
+    let gudangSoalMaster = []; 
+    let bankSoal = [];         
+    let currentQuestionIndex = 0;
+    let userAnswers = {};
+    let raguRaguStatus = {}; 
+    let dataSiswa = { nama: "", jenis_tes: "" };
+    let timerInterval;
+    let sisaWaktu = 0; 
+
+window.onload = function() {
+        // === SISTEM GERBANG TANGGAL & JADWAL KETAT ===
+        const sekarang = new Date();
+        const tahun = sekarang.getFullYear();
+        const bulan = sekarang.getMonth() + 1; // Januari = 0, jadi harus +1
+        const tanggal = sekarang.getDate();
+        
+        const jam = sekarang.getHours();
+        const menit = scheduler = sekarang.getMinutes();
+        const waktuDesimal = jam + (menit / 60); // Format desimal (misal 06:30 -> 6.5)
+
+        const selectTes = document.getElementById('jenis_tes');
+        selectTes.innerHTML = ""; // Bersihkan pilihan bawaan
+
+        // 1. JADWAL PRETEST: 3 Juni 2026 (Pukul 06.30 - 08.30)
+        // 06.30 = 6.5 | 08.30 = 8.5
+        if (tahun === 2026 && bulan === 6 && tanggal === 3) {
+            if (waktuDesimal >= 6.5 && waktuDesimal < 8.5) {
+                selectTes.innerHTML += `<option value="Pretest">Pretest (30 Menit • 15 Soal)</option>`;
+            }
+        }
+        
+        // 2. JADWAL PENDALAMAN: 5 Juni 2026 (Pukul 16.00 - 18.00)
+        // 16.00 = 16.0 | 18.00 = 18.0
+        if (tahun === 2026 && bulan === 6 && tanggal === 5) {
+            if (waktuDesimal >= 16.0 && waktuDesimal < 18.0) {
+                selectTes.innerHTML += `<option value="Pendalaman">Pendalaman Materi (45 Menit • 30 Soal)</option>`;
+            }
+        }
+
+        // 3. JADWAL POSTTEST: 5 Juni 2026 (Pukul 18.00 - 19.00)
+        // 18.00 = 18.0 | 19.00 = 19.0
+        if (tahun === 2026 && bulan === 6 && tanggal === 5) {
+            if (waktuDesimal >= 18.0 && waktuDesimal < 19.0) {
+                selectTes.innerHTML += `<option value="Posttest">Posttest (30 Menit • 15 Soal)</option>`;
+            }
+        }
+
+        // KONDISI JIKA DI LUAR JADWAL UJIAN (BELUM BUKA / SUDAH LEWAT)
+        if (selectTes.innerHTML === "") {
+            selectTes.innerHTML = `<option value="">Tidak ada evaluasi aktif saat ini</option>`;
+            selectTes.disabled = true;
+            
+            // Kunci tombol mulai dan ganti teksnya
+            const startBtn = document.getElementById('start-btn');
+            startBtn.disabled = true;
+            startBtn.className = "w-full bg-slate-400 text-white font-bold py-3.5 px-4 rounded-xl cursor-not-allowed flex items-center justify-center";
+            startBtn.innerHTML = `<span>Pendaftaran Tes Ditutup</span>`;
+            
+            // DIUBAH: Panggil modal custom, bukan alert bawaan browser lagi
+            document.getElementById('custom-alert-modal').classList.remove('hidden');
+            return; 
+        }
+        // === END SISTEM GERBANG TANGGAL & JADWAL ===
+
+
+        // --- Sisa kode Fetch Data Soal Anda Tetap Di Sini ---
+        let checkDataInterval = setInterval(() => {
+            if (gudangSoalMaster && gudangSoalMaster.length > 0) {
+                if (selectTes.disabled) return;
+                document.getElementById('start-btn').innerHTML = `<span>Mulai Tes</span><i class="fa-solid fa-arrow-right ml-2 text-xs"></i>`;
+                document.getElementById('loading-icon').classList.add('hidden');
+                clearInterval(checkDataInterval);
+            }
+        }, 500);
+
+        fetch(API_URL)
+        .then(res => {
+            if (!res.ok) throw new Error("Respon server HTTP tidak oke: " + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                gudangSoalMaster = data; 
+                if (selectTes.disabled) return;
+                document.getElementById('start-btn').innerHTML = `<span>Mulai Tes</span><i class="fa-solid fa-arrow-right ml-2 text-xs"></i>`;
+                document.getElementById('loading-icon').classList.add('hidden');
+                clearInterval(checkDataInterval);
+            }
+        })
+        .catch(err => {
+            console.warn("Mendeteksi galat asinkronus (CORS/Redirect Google), mengecek ulang data asli...");
+            setTimeout(() => {
+                if (!gudangSoalMaster || gudangSoalMaster.length === 0) {
+                    console.error("Detail kegagalan koneksi internet/API:", err);
+                    alert("Gagal memuat soal. Pastikan URL API_URL sudah benar!");
+                }
+            }, 1500);
+        });
+    };
+
+    function kocokArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function startQuiz() {
+        dataSiswa.nama = document.getElementById('nama').value.trim();
+        dataSiswa.jenis_tes = document.getElementById('jenis_tes').value;
+
+        if (dataSiswa.nama === "") {
+            alert("Silakan masukkan nama Anda terlebih dahulu!");
+            return;
+        }
+        
+        if (gudangSoalMaster.length === 0) {
+            alert("Soal belum selesai dimuat dari database. Mohon tunggu beberapa detik lagi.");
+            return;
+        }
+
+        // --- MANAJEMEN TIMER DINAMIS ---
+        if (dataSiswa.jenis_tes === "Pendalaman") {
+            sisaWaktu = 45 * 60; // 45 Menit
+        } else {
+            sisaWaktu = 30 * 60; // 15 Menit untuk Pretest & Posttest
+        }
+
+        // --- FILTER KATEGORI SECARA AMAN (CASE INSENSITIVE) ---
+        let soalTersaring = [];
+        if (dataSiswa.jenis_tes === "Pendalaman") {
+            soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "pendalaman");
+        } else {
+            soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "objektif");
+        }
+
+        if (soalTersaring.length === 0) {
+            alert("Maaf, bank soal untuk kategori ini belum tersedia di Spreadsheet. Periksa tulisan kategori di sheet Anda.");
+            return;
+        }
+
+        // --- STRATEGI SAMPLING ACAK ---
+        if (dataSiswa.jenis_tes === "Pendalaman") {
+            let soalDiacakSempurna = kocokArray([...soalTersaring]);
+            // === DIUBAH DI SINI: Dari .slice(0, 5) menjadi .slice(0, 30) ===
+            bankSoal = soalDiacakSempurna.slice(0, 30); 
+        } else {
+            bankSoal = kocokArray([...soalTersaring]); // Ambil semua soal objektif (15 soal)
+        }
+
+        // Acak Opsi Pilihan Jawaban
+        bankSoal.forEach(soal => {
+            let opsiValid = Array.isArray(soal.options) ? soal.options.filter(o => o !== null && o !== "") : [];
+            soal.optionsDiacak = kocokArray([...opsiValid]);
+        });
+
+        document.getElementById('info-tes').innerText = `${dataSiswa.jenis_tes.toUpperCase()} • ${dataSiswa.nama}`;
+        document.getElementById('identitas-page').classList.add('hidden');
+        document.getElementById('quiz-page').classList.remove('hidden');
+        document.getElementById('quiz-page').classList.add('flex');
+        
+        buatGridNavigasi();
+        showQuestion();
+        startTimer();
+    }
+
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            sisaWaktu--;
+            updateTimerDisplay();
+
+            if (sisaWaktu <= 0) {
+                clearInterval(timerInterval);
+                alert("Waktu habis! Jawaban Anda akan otomatis dikirim.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        let menit = Math.floor(sisaWaktu / 60);
+        let detik = sisaWaktu % 60;
+        document.getElementById('timer').innerText = 
+            (menit < 10 ? "0" : "") + menit + ":" + (detik < 10 ? "0" : "") + detik;
+    }
+
+    function buatGridNavigasi() {
+        let gridHtml = "";
+        for (let i = 0; i < bankSoal.length; i++) {
+            gridHtml += `<button type="button" id="nav-${i}" onclick="lompatKeSoal(${i})" class="h-11 rounded-xl border border-slate-200 font-bold text-sm transition-all duration-150 flex items-center justify-center focus:outline-none bg-white shadow-sm hover:border-slate-400">${i + 1}</button>`;
+        }
+        document.getElementById('grid-nomor').innerHTML = gridHtml;
+    }
+
+    function updateStatusNavigasi() {
+        for (let i = 0; i < bankSoal.length; i++) {
+            let el = document.getElementById(`nav-${i}`);
+            if (!el) continue;
+            let qId = bankSoal[i].id;
+            
+            el.className = "h-11 rounded-xl font-bold text-sm transition-all duration-150 flex items-center justify-center focus:outline-none shadow-sm border";
+            
+            if (raguRaguStatus[qId]) {
+                el.classList.add("bg-amber-400", "text-white", "border-amber-400");
+            } else if (userAnswers[qId]) {
+                el.classList.add("bg-emerald-500", "text-white", "border-emerald-500");
+            } else {
+                el.classList.add("bg-white", "text-slate-700", "border-slate-200", "hover:border-slate-400");
+            }
+
+            if (i === currentQuestionIndex) {
+                el.classList.add("ring-2", "ring-slate-900", "ring-offset-2");
+            }
+        }
+    }
+
+    function showQuestion() {
+        if (bankSoal.length === 0) return;
+        const currentQuestion = bankSoal[currentQuestionIndex];
+        const progressPercent = ((currentQuestionIndex + 1) / bankSoal.length) * 100;
+        document.getElementById('progress').style.width = progressPercent + '%';
+
+        let html = `
+            <div class="flex items-center space-x-2 text-xs font-bold text-terakota-500 tracking-wider uppercase mb-1.5">
+                <span>Pertanyaan</span> 
+                <span class="bg-terakota-50 px-2 py-0.5 rounded-md">${currentQuestionIndex + 1} dari ${bankSoal.length}</span>
+            </div>
+            <p class="text-base sm:text-lg font-semibold text-slate-900 leading-relaxed mb-6">${currentQuestion.question}</p>
+            <div class="space-y-3.5">
+        `;
+
+        currentQuestion.optionsDiacak.forEach(opt => {
+            let checked = (userAnswers[currentQuestion.id] === opt) ? "checked" : "";
+            let bgPilihan = (userAnswers[currentQuestion.id] === opt) ? "bg-terakota-50 border-terakota-500 text-slate-900 ring-1 ring-terakota-500" : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700";
+            
+            html += `
+                <label class="option-label group border ${bgPilihan} px-4 py-3.5 rounded-xl cursor-pointer transition-all flex items-center space-x-3.5 shadow-sm">
+                    <input type="radio" name="answer" value="${opt}" ${checked} onchange="simpanJawabanLokal('${currentQuestion.id}', '${opt}')" class="w-4 h-4 text-terakota-500 border-slate-300 focus:ring-terakota-500 accent-terakota-500"> 
+                    <span class="text-sm font-medium leading-normal">${opt}</span>
+                </label>
+            `;
+        });
+        html += `</div>`;
+
+        document.getElementById('question-container').innerHTML = html;
+        document.getElementById('prev-btn').disabled = (currentQuestionIndex === 0);
+        
+        if (currentQuestionIndex === bankSoal.length - 1) {
+            document.getElementById('next-btn').innerHTML = `<span>Selesai</span> <i class="fa-solid fa-flag-checkered ml-1"></i>`;
+            document.getElementById('next-btn').className = "px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all flex items-center space-x-2 shadow-md text-sm";
+        } else {
+            document.getElementById('next-btn').innerHTML = `<span>Selanjutnya</span> <i class="fa-solid fa-arrow-right"></i>`;
+            document.getElementById('next-btn').className = "px-6 py-2.5 bg-terakota-500 hover:bg-terakota-600 text-white font-bold rounded-xl transition-all flex items-center space-x-2 shadow-md text-sm";
+        }
+
+        updateStatusNavigasi();
+    }
+
+    function simpanJawabanLokal(soalId, nilaiJawaban) {
+        userAnswers[soalId] = nilaiJawaban;
+        updateStatusNavigasi();
+        showQuestion(); 
+    }
+
+    function toggleRaguRagu() {
+        if (bankSoal.length === 0) return;
+        const currentQuestion = bankSoal[currentQuestionIndex];
+        let qId = currentQuestion.id;
+        raguRaguStatus[qId] = !raguRaguStatus[qId];
+        updateStatusNavigasi();
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < bankSoal.length - 1) {
+            currentQuestionIndex++;
+            showQuestion();
+        } else {
+            konfirmasiSelesai();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion();
+        }
+    }
+
+    function lompatKeSoal(index) {
+        currentQuestionIndex = index;
+        showQuestion();
+    }
+
+    function konfirmasiSelesai() {
+        let totalSoal = bankSoal.length;
+        let jumlahTerjawab = Object.keys(userAnswers).length;
+        let soalBelumDijawab = totalSoal - jumlahTerjawab;
+
+        // --- VALIDASI SOAL KOSONG ---
+        if (soalBelumDijawab > 0) {
+            alert(`Gagal mengirim! Ada ${soalBelumDijawab} soal yang belum Anda jawab. Silakan periksa kembali navigasi nomor soal Anda.`);
+            return; // Menghentikan proses submit jika ada yang kosong
+        }
+
+        // --- PROSES LANJUT JIKA SEMUA SUDAH TERJAWAB ---
+        let pesan = `Apakah Anda yakin ingin mengakhiri kuis ujian?\n\nSemua soal (${jumlahTerjawab}) telah selesai dijawab dengan lengkap.`;
+        
+        let adaRagu = Object.values(raguRaguStatus).includes(true);
+        if (adaRagu) {
+            pesan += `\n\nPeringatan: Masih ada nomor yang Anda tandai Ragu-Ragu!`;
+        }
+
+        if (confirm(pesan)) {
+            clearInterval(timerInterval);
+            submitQuiz();
+        }
+    }
+
+    function submitQuiz() {
+        document.getElementById('quiz-page').className = "hidden";
+        document.getElementById('result-page').classList.remove('hidden');
+
+        let jawabanFinalKirim = { ...userAnswers };
+
+        gudangSoalMaster.forEach(soal => {
+            if (soal.kategori === "pendalaman") {
+                if (!jawabanFinalKirim[soal.id]) {
+                    jawabanFinalKirim[soal.id] = "Tidak Mendapatkan Soal Ini";
+                }
+            }
+        });
+
+        const payload = {
+            nama: dataSiswa.nama,
+            jenis_tes: dataSiswa.jenis_tes,
+            jawaban: jawabanFinalKirim
+        };
+
+        fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(resData => {
+            if(resData.status === "success") {
+                document.getElementById('status-text').innerHTML = `<span class="text-slate-800 text-lg font-bold block mb-1">Berhasil Disimpan!</span> Jawaban berhasil terekam aman ke Spreadsheet.<br><span class="inline-block mt-3 bg-terakota-50 text-terakota-600 font-extrabold text-xl px-5 py-2 rounded-xl border border-terakota-200 shadow-sm">SKOR ANDA: ${resData.skor.toFixed(2)}</span>`;
+            } else {
+                document.getElementById('status-text').innerText = "Gagal menyimpan: " + resData.message;
+            }
+        })
+        .catch(err => {
+            document.getElementById('status-text').innerText = "Terjadi kesalahan jaringan saat mengirim jawaban.";
+            console.error(err);
+        });
+    }
+    function tutupModalJadwal() {
+        document.getElementById('custom-alert-modal').classList.add('hidden');
+    }
+</script>
+<div id="custom-alert-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="bg-slate-950 text-white px-6 py-4 flex items-center space-x-3">
+                <div class="bg-terakota-500 text-white p-2 rounded-xl">
+                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold tracking-wide uppercase text-slate-200">Informasi Jadwal Evaluasi</h3>
+                    <p class="text-[10px] text-slate-400">Badan Pusat Statistik Kab. Minahasa Selatan</p>
+                </div>
+            </div>
+            <div class="p-6">
+                <p class="text-sm font-semibold text-slate-900 mb-4 leading-relaxed flex items-start gap-2">
+                    <i class="fa-solid fa-circle-exclamation text-amber-500 mt-0.5 text-base flex-shrink-0"></i>
+                    <span>Maaf, tidak ada jadwal evaluasi yang aktif saat ini.</span>
+                </p>
+                
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3 text-xs text-slate-600 font-medium">
+                    <p class="font-bold text-slate-900 tracking-wider uppercase text-[10px] text-terakota-500 mb-1">Jadwal Resmi Pelaksanaan:</p>
+                    <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
+                        <span>• Pretest</span>
+                        <span class="font-bold text-slate-800">3 Juni 2026 (06:30 - 08:30)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
+                        <span>• Pendalaman</span>
+                        <span class="font-bold text-slate-800">5 Juni 2026 (16:00 - 18:00)</span>
+                    </div>
+                    <div class="flex items-center justify-between py-1">
+                        <span>• Posttest</span>
+                        <span class="font-bold text-slate-800">5 Juni 2026 (18:00 - 19:00)</span>
+                    </div>
+                </div>
+                
+                <button onclick="tutupModalJadwal()" class="w-full mt-5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
+                    Saya Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
