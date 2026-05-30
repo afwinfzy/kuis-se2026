@@ -37,17 +37,17 @@
     <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <div class="bg-terakota-500 text-white p-2.5 rounded-xl shadow-md shadow-terakota-500/20">
-                    <i class="fa-solid fa-chart-line fa-lg"></i>
+                <div class="bg-white p-1 rounded-xl shadow-md shadow-slate-200/50 border border-slate-100">
+                  <img src="https://lh3.googleusercontent.com/d/16EYRkohpo-ksL6V3chLLyQ_OUrRVUdXB" alt="Logo SE2026" class="w-10 h-10 object-contain">
                 </div>
-                <div>
-                    <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-tight">Sensus Ekonomi 2026</h1>
-                    <p class="text-xs font-semibold text-terakota-500 tracking-wider uppercase">Aplikasi Kuis & Pendalaman</p>
-                </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-900 tracking-tight leading-tight">SENSUS EKONOMI 2026</h1>
+                <p class="text-xs font-semibold text-terakota-500 tracking-wider uppercase">Aplikasi Kuis &amp; Pendalaman</p>
             </div>
+        </div>
             <div class="hidden sm:flex items-center space-x-2 text-xs bg-slate-100 text-slate-600 px-3 py-1.5 rounded-full font-medium">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Server BPS Terkoneksi</span>
+                <span>Server BPS Online</span>
             </div>
         </div>
     </header>
@@ -58,7 +58,7 @@
             <div class="text-center mb-8">
                 <span class="bg-terakota-50 text-terakota-600 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-widest">Evaluasi Petugas</span>
                 <h2 class="text-2xl font-bold text-slate-900 mt-2">Selamat Datang</h2>
-                <p class="text-sm text-slate-500 mt-1">Silakan lengkapi identitas Anda sebelum memulai kuis pengerjaan.</p>
+                <p class="text-sm text-slate-500 mt-1">Silakan lengkapi identitas Anda sebelum memulai kuis pengerjaan.</p>             
             </div>
 
             <div class="space-y-5">
@@ -88,11 +88,17 @@
                         </span>
                     </div>
                 </div>
+                <div class="pt-2 space-y-2">
+                    <button id="start-btn" onclick="startQuiz()" class="w-full bg-terakota-500 hover:bg-terakota-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-terakota-500/30 transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-terakota-500/50 active:scale-[0.98] flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-circle-notch animate-spin mr-2" id="loading-icon"></i>
+                        <span>Memuat Soal...</span>
+                    </button>
 
-                <button id="start-btn" onclick="startQuiz()" class="w-full bg-terakota-500 hover:bg-terakota-600 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-terakota-500/30 transition-all duration-150 focus:outline-none focus:ring-4 focus:ring-terakota-500/50 active:scale-[0.98] flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-circle-notch animate-spin mr-2" id="loading-icon"></i>
-                    <span>Memuat Soal...</span>
-                </button>
+                    <button type="button" onclick="bukaResiKumulatif()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl shadow border border-slate-800 transition-all active:scale-[0.98] flex items-center justify-center space-x-2 text-sm">
+                        <i class="fa-solid fa-receipt text-terakota-400"></i>
+                        <span>Lihat Resi Hasil Evaluasi</span>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -175,7 +181,7 @@
     <footer class="bg-slate-900 text-slate-400 text-center py-4 text-xs font-medium border-t border-slate-800">
         <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div>&copy; 2026 Badan Pusat Statistik Kabupaten Minahasa Selatan</div>
-            <div class="text-slate-500 text-[11px]">Sensus Ekonomi 2026 • Struktur Data Otomatis v2.3</div>
+            <div class="text-slate-500 text-[11px]">Sensus Ekonomi 2026 | Mencatat Ekonomi Indonesia</div>
         </div>
     </footer>
 
@@ -292,78 +298,61 @@ window.onload = function() {
     }
 
     function startQuiz() {
-        dataSiswa.nama = document.getElementById('nama').value.trim();
-        dataSiswa.jenis_tes = document.getElementById('jenis_tes').value;
+    dataSiswa.nama = document.getElementById('nama').value.trim();
+    dataSiswa.jenis_tes = document.getElementById('jenis_tes').value;
 
-        if (dataSiswa.nama === "") {
-            alert("Silakan masukkan nama Anda terlebih dahulu!");
-            return;
-        }
-        
-        if (gudangSoalMaster.length === 0) {
-            alert("Soal belum selesai dimuat dari database. Mohon tunggu beberapa detik lagi.");
-            return;
-        }
-
-        // --- FILTER KATEGORI SECARA AMAN ---
-        let soalTersaring = [];
-        if (dataSiswa.jenis_tes === "Pendalaman") {
-            soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "pendalaman");
-        } else {
-            soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "objektif");
-        }
-
-        if (soalTersaring.length === 0) {
-            alert("Maaf, bank soal untuk kategori ini belum tersedia di Spreadsheet.");
-            return;
-        }
-
-        // === CEK APAKAH ADA SESI PENDING DI LOCALSTORAGE ===
-        const sesiLama = localStorage.getItem("kuis_se2026_sesi");
-        const dataSesi = sesiLama ? JSON.parse(sesiLama) : null;
-
-        // Jika nama, jenis tes, dan panjang soal cocok, RECOVERY data lama
-        if (dataSesi && dataSesi.nama === dataSiswa.nama && dataSesi.jenis_tes === dataSiswa.jenis_tes) {
-            bankSoal = dataSesi.bankSoal;
-            userAnswers = dataSesi.userAnswers || {};
-            raguRaguStatus = dataSesi.raguRaguStatus || {};
-            sisaWaktu = dataSesi.sisaWaktu;
-            currentQuestionIndex = dataSesi.currentQuestionIndex || 0;
-        } else {
-            // JIKA SESI BARU: Lakukan pengacakan normal seperti biasa
-            if (dataSiswa.jenis_tes === "Pendalaman") {
-                let soalDiacakSempurna = kocokArray([...soalTersaring]);
-                bankSoal = soalDiacakSempurna.slice(0, 30); 
-            } else {
-                bankSoal = kocokArray([...soalTersaring]);
-            }
-
-            // Acak Opsi Pilihan Jawaban
-            bankSoal.forEach(soal => {
-                let opsiValid = Array.isArray(soal.options) ? soal.options.filter(o => o !== null && o !== "") : [];
-                soal.optionsDiacak = kocokArray([...opsiValid]);
-            });
-
-            // Set Waktu Awal Sesi Baru
-            if (dataSiswa.jenis_tes === "Pendalaman") {
-                sisaWaktu = 45 * 60;
-            } else {
-                sisaWaktu = 15 * 60;
-            }
-            
-            // Simpan struktur kuis baru ke localStorage
-            simpanSesiKeStorage();
-        }
-
-        document.getElementById('info-tes').innerText = `${dataSiswa.jenis_tes.toUpperCase()} • ${dataSiswa.nama}`;
-        document.getElementById('identitas-page').classList.add('hidden');
-        document.getElementById('quiz-page').classList.remove('hidden');
-        document.getElementById('quiz-page').classList.add('flex');
-        
-        buatGridNavigasi();
-        showQuestion();
-        startTimer();
+    // Perbaikan: Menggunakan Modal Kustom jika nama kosong
+    if (dataSiswa.nama === "") {
+        showCustomAlert("Identitas Diperlukan", "Silakan masukkan nama lengkap Anda terlebih dahulu untuk memulai evaluasi.");
+        return;
     }
+
+    if (gudangSoalMaster.length === 0) {
+        showCustomAlert("Data Belum Siap", "Soal belum selesai dimuat dari database. Mohon tunggu beberapa detik lagi.");
+        return;
+    }
+
+    // ... sisa kode startQuiz yang lama tetap sama ...
+    localStorage.setItem("kuis_se2026_nama_user", dataSiswa.nama);
+    
+    // (Tambahkan logika pemilihan soal dan transisi halaman seperti sebelumnya)
+    let soalTersaring = [];
+    if (dataSiswa.jenis_tes === "Pendalaman") {
+        soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "pendalaman");
+    } else {
+        soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "objektif");
+    }
+
+    if (soalTersaring.length === 0) {
+        showCustomAlert("Data Kosong", "Maaf, bank soal untuk kategori ini belum tersedia.");
+        return;
+    }
+    
+    // Lanjutkan transisi UI
+    document.getElementById('info-tes').innerText = `${dataSiswa.jenis_tes.toUpperCase()} • ${dataSiswa.nama}`;
+    document.getElementById('identitas-page').classList.add('hidden');
+    document.getElementById('quiz-page').classList.remove('hidden');
+    document.getElementById('quiz-page').classList.add('flex');
+    
+    buatGridNavigasi();
+    showQuestion();
+    startTimer();
+}
+
+// Fungsi tambahan untuk menampilkan modal kustom
+function showCustomAlert(title, message) {
+    // Anda bisa menggunakan salah satu modal yang sudah ada, 
+    // atau buat modal baru dengan ID 'custom-alert-modal' jika belum ada.
+    const modal = document.getElementById('custom-alert-modal');
+    if (modal) {
+        modal.querySelector('h3').innerText = title;
+        modal.querySelector('p.text-sm').innerText = message;
+        modal.classList.remove('hidden');
+    } else {
+        // Fallback jika modal belum ada
+        alert(title + ": " + message);
+    }
+}
 
     function startTimer() {
         updateTimerDisplay();
@@ -469,7 +458,7 @@ window.onload = function() {
         simpanSesiKeStorage(); // Kunci jawaban ke storage
         showQuestion(); 
     }
-    
+
     // Fungsi Baru: Tulis data ke memori internal browser
     function simpanSesiKeStorage() {
         const payloadSesi = {
@@ -546,7 +535,7 @@ window.onload = function() {
     function submitQuiz() {
         // HAPUS SESI KUIS DARI MEMORI KARENA SUDAH SELESAI
         localStorage.removeItem("kuis_se2026_sesi");
-        
+
         document.getElementById('quiz-page').className = "hidden";
         document.getElementById('result-page').classList.remove('hidden');
 
@@ -586,6 +575,51 @@ window.onload = function() {
     function tutupModalJadwal() {
         document.getElementById('custom-alert-modal').classList.add('hidden');
     }
+
+   // FUNGSI BARU: MENARIK RIWAYAT EVALUASI MULTI-TAB DARI GOOGLE SHEETS
+function bukaResiKumulatif() {
+    let namaUser = document.getElementById('nama').value.trim();
+    
+    // MENGGUNAKAN MODAL CUSTOM BARU (Bukan alert bawaan browser lagi)
+    if (namaUser === "") {
+        document.getElementById('modal-nama-kosong-resi').classList.remove('hidden');
+        return;
+    }
+
+    document.getElementById('resi-nama').innerText = "MENCOCOKKAN DATABASE...";
+    
+    // Membuka modal dengan teks loading awal
+    document.getElementById('modal-resi-kumulatif').classList.remove('hidden');
+    
+    // Memanggil API dengan parameter nama terenkripsi URL
+    const urlAmbilResi = `${API_URL}?aksi=ambil_resi&nama=${encodeURIComponent(namaUser)}`;
+
+    fetch(urlAmbilResi)
+    .then(res => res.json())
+    .then(resData => {
+        document.getElementById('resi-nama').innerText = resData.nama.toUpperCase();
+        
+        // Pengecekan data & Render nilai dari Tab Pretest
+        document.getElementById('resi-score-pretest').innerText = resData.pretest.skor;
+        document.getElementById('resi-time-pretest').innerText = resData.pretest.waktu;
+        document.getElementById('resi-status-pretest').innerHTML = (resData.pretest.skor !== "--") ? '<span class="text-emerald-600 font-bold">SELESAI</span>' : '<span class="text-slate-400 font-medium">BELUM</span>';
+
+        // Pengecekan data & Render nilai dari Tab Pendalaman
+        document.getElementById('resi-score-pendalaman').innerText = resData.pendalaman.skor;
+        document.getElementById('resi-time-pendalaman').innerText = resData.pendalaman.waktu;
+        document.getElementById('resi-status-pendalaman').innerHTML = (resData.pendalaman.skor !== "--") ? '<span class="text-emerald-600 font-bold">SELESAI</span>' : '<span class="text-slate-400 font-medium">BELUM</span>';
+
+        // Pengecekan data & Render nilai dari Tab Posttest
+        document.getElementById('resi-score-posttest').innerText = resData.posttest.skor;
+        document.getElementById('resi-time-posttest').innerText = resData.posttest.waktu;
+        document.getElementById('resi-status-posttest').innerHTML = (resData.posttest.skor !== "--") ? '<span class="text-emerald-600 font-bold">SELESAI</span>' : '<span class="text-slate-400 font-medium">BELUM</span>';
+    })
+    .catch(err => {
+        console.error("Gagal sinkronisasi data multi-tab:", err);
+        document.getElementById('modal-resi-kumulatif').classList.add('hidden');
+        alert("Gagal menarik data dari server. Pastikan nama terdaftar di lembar kerja kuis.");
+    });
+}
 </script>
 <div id="custom-alert-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
@@ -664,5 +698,91 @@ window.onload = function() {
             </div>
         </div>
     </div>
+
+    <div id="modal-nama-kosong-resi" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="p-6 text-center">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 text-amber-600 mb-4">
+                      <i class="fa-solid fa-user-xmark text-xl"></i>
+                    </div>
+                 <h3 class="text-base font-bold text-slate-900 mb-2">Nama Belum Diisi</h3>
+                 <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+                Silakan ketik Nama Lengkap Anda terlebih dahulu pada kolom identitas untuk melacak resi evaluasi kumulatif!
+                  </p>
+                <button onclick="document.getElementById('modal-nama-kosong-resi').classList.add('hidden')" class="w-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
+                Saya Mengerti
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-resi-kumulatif" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+         <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-md w-full overflow-hidden transform transition-all scale-100">
+            <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+                 <div class="flex items-center space-x-3">
+                     <div class="bg-terakota-500 text-white p-2 rounded-xl">
+                            <i class="fa-solid fa-receipt text-sm"></i>
+                     </div>
+                 <div>
+                    <h3 class="text-sm font-bold tracking-wide uppercase text-slate-200">Resi Evaluasi Kumulatif</h3>
+                    <p class="text-[10px] text-slate-400">Pelatihan Petugas Sensus Ekonomi 2026</p>
+                </div>
+            </div>
+            <button onclick="document.getElementById('modal-resi-kumulatif').classList.add('hidden')" class="text-slate-400 hover:text-white transition-all">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div class="text-center mb-5 bg-slate-50 rounded-xl p-3 border border-slate-100">
+                <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Nama Peserta Terdaftar</span>
+                <span id="resi-nama" class="text-base font-extrabold text-slate-900 tracking-wide mt-0.5 block">Loading...</span>
+            </div>
+            
+           <div class="space-y-3">
+    <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100 text-xs">
+        <div>
+            <p class="font-bold text-slate-800">1. Pretest (15 Soal)</p>
+            <p class="text-[10px] text-slate-400 mt-0.5" id="resi-time-pretest">--</p>
+        </div>
+        <div class="text-right">
+            <span class="font-bold text-slate-900 text-sm block" id="resi-score-pretest">--</span>
+            <span id="resi-status-pretest" class="text-[10px] font-bold">--</span>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100 text-xs">
+        <div>
+            <p class="font-bold text-slate-800">2. Pendalaman Materi (30 Soal)</p>
+            <p class="text-[10px] text-slate-400 mt-0.5" id="resi-time-pendalaman">--</p>
+        </div>
+        <div class="text-right">
+            <span class="font-bold text-slate-900 text-sm block" id="resi-score-pendalaman">--</span>
+            <span id="resi-status-pendalaman" class="text-[10px] font-bold">--</span>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-between p-3 bg-slate-50/50 rounded-xl border border-slate-100 text-xs">
+        <div>
+            <p class="font-bold text-slate-800">3. Posttest (15 Soal)</p>
+            <p class="text-[10px] text-slate-400 mt-0.5" id="resi-time-posttest">--</p>
+        </div>
+        <div class="text-right">
+            <span class="font-bold text-slate-900 text-sm block" id="resi-score-posttest">--</span>
+            <span id="resi-status-posttest" class="text-[10px] font-bold">--</span>
+        </div>
+    </div>
+</div>
+            
+            <div class="p-4 bg-slate-50 border-t border-slate-200 grid grid-cols-2 gap-3">
+            <button onclick="window.print();" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 px-3 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-print"></i> Cetak Dokumen
+            </button>
+            <button onclick="tutupModalResi()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 px-3 rounded-xl transition-all text-xs flex items-center justify-center">
+                Tutup Resi
+            </button>
+        </div>
+        </div>
+    </div>
+</div>
 </body>
 </html> 
