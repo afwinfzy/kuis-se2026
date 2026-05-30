@@ -483,24 +483,29 @@ window.onload = function() {
         let jumlahTerjawab = Object.keys(userAnswers).length;
         let soalBelumDijawab = totalSoal - jumlahTerjawab;
 
-        // --- VALIDASI SOAL KOSONG ---
+        // JIKA ADA YANG KOSONG: Munculkan modal peringatan custom
         if (soalBelumDijawab > 0) {
-            alert(`Gagal mengirim! Ada ${soalBelumDijawab} soal yang belum Anda jawab. Silakan periksa kembali navigasi nomor soal Anda.`);
-            return; // Menghentikan proses submit jika ada yang kosong
+            document.getElementById('modal-soal-kosong').classList.remove('hidden');
+            return; // Stop di sini, tidak bisa submit
         }
 
-        // --- PROSES LANJUT JIKA SEMUA SUDAH TERJAWAB ---
-        let pesan = `Apakah Anda yakin ingin mengakhiri kuis ujian?\n\nSemua soal (${jumlahTerjawab}) telah selesai dijawab dengan lengkap.`;
-        
-        let adaRagu = Object.values(raguRaguStatus).includes(true);
-        if (adaRagu) {
-            pesan += `\n\nPeringatan: Masih ada nomor yang Anda tandai Ragu-Ragu!`;
-        }
+        // JIKA SUDAH TERISI SEMUA: Munculkan modal konfirmasi submit custom
+        document.getElementById('modal-konfirmasi-submit').classList.remove('hidden');
+    }
 
-        if (confirm(pesan)) {
-            clearInterval(timerInterval);
-            submitQuiz();
-        }
+    // === FUNGSI KONTROL MODAL CUSTOM ===
+    function tutupModalKosong() {
+        document.getElementById('modal-soal-kosong').classList.add('hidden');
+    }
+
+    function tutupModalSubmit() {
+        document.getElementById('modal-konfirmasi-submit').classList.add('hidden');
+    }
+
+    function eksekusiSubmitAkhir() {
+        tutupModalSubmit(); // Tutup modal konfirmasi
+        clearInterval(timerInterval); // Hentikan timer kuis
+        submitQuiz(); // Langsung panggil fungsi submit asli bawaan Anda
     }
 
     function submitQuiz() {
@@ -580,6 +585,44 @@ window.onload = function() {
                 <button onclick="tutupModalJadwal()" class="w-full mt-5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
                     Saya Mengerti
                 </button>
+            </div>
+        </div>
+    </div>
+<div id="modal-soal-kosong" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-amber-100 text-amber-600 mb-4">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2">Jawaban Belum Lengkap</h3>
+                <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+                    Ada beberapa soal yang belum Anda jawab. Silakan periksa kembali dan pastikan semua soal telah terisi sebelum mengirimkan ujian.
+                </p>
+                <button onclick="tutupModalKosong()" class="w-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
+                    Periksa Jawaban
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-konfirmasi-submit" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full overflow-hidden transform transition-all scale-100 animate-[fadeIn_0.2s_ease-out]">
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-slate-100 text-slate-900 mb-4">
+                    <i class="fa-solid fa-circle-question text-xl"></i>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 mb-2">Selesai Ujian?</h3>
+                <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+                    Apakah Anda yakin ingin mengirimkan semua jawaban sekarang? Setelah dikirim, jawaban tidak dapat diubah kembali.
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="tutupModalSubmit()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold py-3 px-4 rounded-xl transition-all">
+                        Batal
+                    </button>
+                    <button onclick="eksekusiSubmitAkhir()" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
+                        Ya, Kirim
+                    </button>
+                </div>
             </div>
         </div>
     </div>
