@@ -305,14 +305,7 @@ window.onload = function() {
             return;
         }
 
-        // --- MANAJEMEN TIMER DINAMIS ---
-        if (dataSiswa.jenis_tes === "Pendalaman") {
-            sisaWaktu = 45 * 60; // 45 Menit
-        } else {
-            sisaWaktu = 30 * 60; // 15 Menit untuk Pretest & Posttest
-        }
-
-        // --- FILTER KATEGORI SECARA AMAN (CASE INSENSITIVE) ---
+        // --- FILTER KATEGORI SECARA AMAN ---
         let soalTersaring = [];
         if (dataSiswa.jenis_tes === "Pendalaman") {
             soalTersaring = gudangSoalMaster.filter(soal => soal.kategori === "pendalaman");
@@ -321,24 +314,46 @@ window.onload = function() {
         }
 
         if (soalTersaring.length === 0) {
-            alert("Maaf, bank soal untuk kategori ini belum tersedia di Spreadsheet. Periksa tulisan kategori di sheet Anda.");
+            alert("Maaf, bank soal untuk kategori ini belum tersedia di Spreadsheet.");
             return;
         }
 
-        // --- STRATEGI SAMPLING ACAK ---
-        if (dataSiswa.jenis_tes === "Pendalaman") {
-            let soalDiacakSempurna = kocokArray([...soalTersaring]);
-            // === DIUBAH DI SINI: Dari .slice(0, 5) menjadi .slice(0, 30) ===
-            bankSoal = soalDiacakSempurna.slice(0, 30); 
-        } else {
-            bankSoal = kocokArray([...soalTersaring]); // Ambil semua soal objektif (15 soal)
-        }
+        // === CEK APAKAH ADA SESI PENDING DI LOCALSTORAGE ===
+        const sesiLama = localStorage.getItem("kuis_se2026_sesi");
+        const dataSesi = sesiLama ? JSON.parse(sesiLama) : null;
 
-        // Acak Opsi Pilihan Jawaban
-        bankSoal.forEach(soal => {
-            let opsiValid = Array.isArray(soal.options) ? soal.options.filter(o => o !== null && o !== "") : [];
-            soal.optionsDiacak = kocokArray([...opsiValid]);
-        });
+        // Jika nama, jenis tes, dan panjang soal cocok, RECOVERY data lama
+        if (dataSesi && dataSesi.nama === dataSiswa.nama && dataSesi.jenis_tes === dataSiswa.jenis_tes) {
+            bankSoal = dataSesi.bankSoal;
+            userAnswers = dataSesi.userAnswers || {};
+            raguRaguStatus = dataSesi.raguRaguStatus || {};
+            sisaWaktu = dataSesi.sisaWaktu;
+            currentQuestionIndex = dataSesi.currentQuestionIndex || 0;
+        } else {
+            // JIKA SESI BARU: Lakukan pengacakan normal seperti biasa
+            if (dataSiswa.jenis_tes === "Pendalaman") {
+                let soalDiacakSempurna = kocokArray([...soalTersaring]);
+                bankSoal = soalDiacakSempurna.slice(0, 30); 
+            } else {
+                bankSoal = kocokArray([...soalTersaring]);
+            }
+
+            // Acak Opsi Pilihan Jawaban
+            bankSoal.forEach(soal => {
+                let opsiValid = Array.isArray(soal.options) ? soal.options.filter(o => o !== null && o !== "") : [];
+                soal.optionsDiacak = kocokArray([...opsiValid]);
+            });
+
+            // Set Waktu Awal Sesi Baru
+            if (dataSiswa.jenis_tes === "Pendalaman") {
+                sisaWaktu = 45 * 60;
+            } else {
+                sisaWaktu = 15 * 60;
+            }
+            
+            // Simpan struktur kuis baru ke localStorage
+            simpanSesiKeStorage();
+        }
 
         document.getElementById('info-tes').innerText = `${dataSiswa.jenis_tes.toUpperCase()} • ${dataSiswa.nama}`;
         document.getElementById('identitas-page').classList.add('hidden');
@@ -355,6 +370,11 @@ window.onload = function() {
         timerInterval = setInterval(() => {
             sisaWaktu--;
             updateTimerDisplay();
+            
+            // Update sisa waktu di storage setiap 5 detik sekali (agar hemat performa HP)
+            if (sisaWaktu % 5 === 0) {
+                simpanSesiKeStorage();
+            }
 
             if (sisaWaktu <= 0) {
                 clearInterval(timerInterval);
@@ -446,7 +466,22 @@ window.onload = function() {
     function simpanJawabanLokal(soalId, nilaiJawaban) {
         userAnswers[soalId] = nilaiJawaban;
         updateStatusNavigasi();
+        simpanSesiKeStorage(); // Kunci jawaban ke storage
         showQuestion(); 
+    }
+    
+    // Fungsi Baru: Tulis data ke memori internal browser
+    function simpanSesiKeStorage() {
+        const payloadSesi = {
+            nama: dataSiswa.nama,
+            jenis_tes: dataSiswa.jenis_tes,
+            bankSoal: bankSoal,
+            userAnswers: userAnswers,
+            raguRaguStatus: raguRaguStatus,
+            sisaWaktu: sisaWaktu,
+            currentQuestionIndex: currentQuestionIndex
+        };
+        localStorage.setItem("kuis_se2026_sesi", JSON.stringify(payloadSesi));
     }
 
     function toggleRaguRagu() {
@@ -509,6 +544,9 @@ window.onload = function() {
     }
 
     function submitQuiz() {
+        // HAPUS SESI KUIS DARI MEMORI KARENA SUDAH SELESAI
+        localStorage.removeItem("kuis_se2026_sesi");
+        
         document.getElementById('quiz-page').className = "hidden";
         document.getElementById('result-page').classList.remove('hidden');
 
