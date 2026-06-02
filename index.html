@@ -186,7 +186,7 @@
     </footer>
 
 <script>
-    // ⚠️ GANTI DENGAN URL WEB APP BARU HASIL DEPLOY APPS SCRIPT ANDA
+    
     const API_URL = "https://script.google.com/macros/s/AKfycby393HNUitNV-lUNBcchqvNaHYmRIkqHayuubVoeKm1K1Gn3hpAuFM5jFFjeHew0emDMA/exec"; 
 
     let gudangSoalMaster = []; 
@@ -212,19 +212,19 @@ window.onload = function() {
         selectTes.innerHTML = ""; 
 
     // 1. JADWAL PRETEST: 3 Juni 2026 (Sekarang)
-    if (tahun === 2026 && bulan === 6 && tanggal === 2) {
+    if (tahun === 2026 && bulan === 6 && tanggal === 3) {
         // Rentang waktu diubah sesuai kebutuhan hari ini
-        if (waktuDesimal >= 8.0 && waktuDesimal < 23.9) { 
+        if (waktuDesimal >= 5.0 && waktuDesimal < 23.9) { 
             selectTes.innerHTML += `<option value="Pretest">Pretest (30 Menit • 20 Soal)</option>`;
         }
     }
     
     // 2. JADWAL PENDALAMAN & POSTTEST: 5 Juni 2026
     if (tahun === 2026 && bulan === 6 && tanggal === 2) {
-        if (waktuDesimal >= 8.0 && waktuDesimal < 18.0) {
+        if (waktuDesimal >= 16.0 && waktuDesimal < 18.0) {
             selectTes.innerHTML += `<option value="Pendalaman">Pendalaman Materi (45 Menit • 30 Soal)</option>`;
         }
-        if (waktuDesimal >= 9.0 && waktuDesimal < 19.0) {
+        if (waktuDesimal >= 17.0 && waktuDesimal < 20.0) {
             selectTes.innerHTML += `<option value="Posttest">Posttest (30 Menit • 20 Soal)</option>`;
         }
     }
