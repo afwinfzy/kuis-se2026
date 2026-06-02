@@ -173,7 +173,7 @@
                     Jawaban Anda sedang dikirim dan diproses aman oleh sistem database...
                 </p>
             </div>
-            <p class="text-xs text-slate-400">Terima kasih telah berpartisipasi aktif dalam kegiatan peningkatan kapabilitas data SE2026.</p>
+            <p class="text-xs text-slate-400">Terima kasih telah berpartisipasi aktif dalam Kegiatan Pelatihan Petugas Lapangan SE2026.</p>
         </div>
 
     </main>
@@ -583,7 +583,7 @@ window.onload = function() {
     .then(res => res.json())
     .then(resData => {
         if(resData.status === "success") {
-            document.getElementById('status-text').innerHTML = `<span class="text-slate-800 text-lg font-bold block mb-1">Berhasil Disimpan!</span> Jawaban berhasil terekam aman ke Spreadsheet.<br><span class="inline-block mt-3 bg-terakota-50 text-terakota-600 font-extrabold text-xl px-5 py-2 rounded-xl border border-terakota-200 shadow-sm">SKOR ANDA: ${resData.skor.toFixed(2)}</span>`;
+            document.getElementById('status-text').innerHTML = `<span class="text-slate-800 text-lg font-bold block mb-1">Berhasil Disimpan</span> Jawaban berhasil terekam aman ke database<br><span class="inline-block mt-3 bg-terakota-50 text-terakota-600 font-extrabold text-xl px-5 py-2 rounded-xl border border-terakota-200 shadow-sm">SKOR ANDA: ${resData.skor.toFixed(2)}</span>`;
         } else {
             document.getElementById('status-text').innerText = "Gagal menyimpan: " + resData.message;
         }
