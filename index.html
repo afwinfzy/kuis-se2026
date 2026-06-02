@@ -212,7 +212,7 @@ window.onload = function() {
         selectTes.innerHTML = ""; 
 
     // 1. JADWAL PRETEST: 3 Juni 2026 (Sekarang)
-    if (tahun === 2026 && bulan === 6 && tanggal === 1) {
+    if (tahun === 2026 && bulan === 6 && tanggal === 2) {
         // Rentang waktu diubah sesuai kebutuhan hari ini
         if (waktuDesimal >= 8.0 && waktuDesimal < 23.9) { 
             selectTes.innerHTML += `<option value="Pretest">Pretest (30 Menit • 15 Soal)</option>`;
@@ -220,7 +220,7 @@ window.onload = function() {
     }
     
     // 2. JADWAL PENDALAMAN & POSTTEST: 5 Juni 2026
-    if (tahun === 2026 && bulan === 6 && tanggal === 3) {
+    if (tahun === 2026 && bulan === 6 && tanggal === 2) {
         if (waktuDesimal >= 8.0 && waktuDesimal < 18.0) {
             selectTes.innerHTML += `<option value="Pendalaman">Pendalaman Materi (45 Menit • 30 Soal)</option>`;
         }
@@ -331,8 +331,8 @@ window.onload = function() {
     // Acak seluruh soal hasil filter
     let soalAcak = kocokArray([...soalTersaring]);
 
-    // Tentukan jumlah target (30 untuk Pendalaman, 15 untuk yang lain)
-    let jumlahTarget = (dataSiswa.jenis_tes === "Pendalaman") ? 30 : 15;
+    // Tentukan jumlah target (30 untuk Pendalaman, 20 untuk yang lain)
+    let jumlahTarget = (dataSiswa.jenis_tes === "Pendalaman") ? 30 : 20;
 
     // Potong array (Slice)
     bankSoal = soalAcak.slice(0, jumlahTarget);
@@ -341,7 +341,7 @@ window.onload = function() {
     currentQuestionIndex = 0;
     userAnswers = {};
     raguRaguStatus = {}; 
-    sisaWaktu = (dataSiswa.jenis_tes === "Pendalaman") ? (45 * 60) : (15 * 60);
+    sisaWaktu = (dataSiswa.jenis_tes === "Pendalaman") ? (45 * 60) : (30 * 60);
     
     // Simpan ke LocalStorage agar sesi aman
     localStorage.setItem("kuis_se2026_nama_user", dataSiswa.nama);
