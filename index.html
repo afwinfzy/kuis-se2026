@@ -211,16 +211,16 @@ window.onload = function() {
     const selectTes = document.getElementById('jenis_tes');
         selectTes.innerHTML = ""; 
 
-    // 1. JADWAL PRETEST: 3 Juni 2026 (Sekarang)
-    if (tahun === 2026 && bulan === 6 && tanggal === 3) {
+    // 1. JADWAL PRETEST: 8 Juni 2026
+    if (tahun === 2026 && bulan === 6 && tanggal === 8) {
         // Rentang waktu diubah sesuai kebutuhan hari ini
-        if (waktuDesimal >= 5.0 && waktuDesimal < 12.0) { 
+        if (waktuDesimal >= 5.0 && waktuDesimal < 10.0) { 
             selectTes.innerHTML += `<option value="Pretest">Pretest (30 Menit • 20 Soal)</option>`;
         }
     }
     
-    // 2. JADWAL PENDALAMAN & POSTTEST: 5 Juni 2026
-    if (tahun === 2026 && bulan === 6 && tanggal === 5) {
+    // 2. JADWAL PENDALAMAN & POSTTEST: 10 Juni 2026
+    if (tahun === 2026 && bulan === 6 && tanggal === 10) {
         if (waktuDesimal >= 15.0 && waktuDesimal < 21.0) {
             selectTes.innerHTML += `<option value="Pendalaman">Pendalaman Materi (45 Menit • 30 Soal)</option>`;
         }
