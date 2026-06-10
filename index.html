@@ -211,16 +211,16 @@ window.onload = function() {
     const selectTes = document.getElementById('jenis_tes');
         selectTes.innerHTML = ""; 
 
-    // 1. JADWAL PRETEST: 8 Juni 2026
-    if (tahun === 2026 && bulan === 6 && tanggal === 8) {
+    // 1. JADWAL PRETEST: 11 Juni 2026
+    if (tahun === 2026 && bulan === 6 && tanggal === 11) {
         // Rentang waktu diubah sesuai kebutuhan hari ini
-        if (waktuDesimal >= 5.0 && waktuDesimal < 14.0) { 
+        if (waktuDesimal >= 6.5 && waktuDesimal < 11.0) { 
             selectTes.innerHTML += `<option value="Pretest">Pretest (30 Menit • 20 Soal)</option>`;
         }
     }
     
-    // 2. JADWAL PENDALAMAN & POSTTEST: 10 Juni 2026
-    if (tahun === 2026 && bulan === 6 && tanggal === 10) {
+    // 2. JADWAL PENDALAMAN & POSTTEST: 12 Juni 2026
+    if (tahun === 2026 && bulan === 6 && tanggal === 13) {
         if (waktuDesimal >= 15.5 && waktuDesimal < 22.0) {
             selectTes.innerHTML += `<option value="Pendalaman">Pendalaman Materi (45 Menit • 30 Soal)</option>`;
         }
@@ -668,18 +668,18 @@ function tutupModalResi() {
                 </p>
                 
                 <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 space-y-3 text-xs text-slate-600 font-medium">
-                    <p class="font-bold text-slate-900 tracking-wider uppercase text-[10px] text-terakota-500 mb-1">Jadwal Gelombang 2:</p>
+                    <p class="font-bold text-slate-900 tracking-wider uppercase text-[10px] text-terakota-500 mb-1">Jadwal Gelombang 3:</p>
                     <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
                         <span>• Pretest</span>
-                        <span class="font-bold text-slate-800">8 Juni 2026 (06:30 - 08:30)</span>
+                        <span class="font-bold text-slate-800">11 Juni 2026 (06:30 - 08:30)</span>
                     </div>
                     <div class="flex items-center justify-between py-1 border-b border-dashed border-slate-200">
                         <span>• Pendalaman</span>
-                        <span class="font-bold text-slate-800">10 Juni 2026 (16:00 - 18:00)</span>
+                        <span class="font-bold text-slate-800">13 Juni 2026 (16:00 - 18:00)</span>
                     </div>
                     <div class="flex items-center justify-between py-1">
                         <span>• Posttest</span>
-                        <span class="font-bold text-slate-800">10 Juni 2026 (17:00 - 20:00)</span>
+                        <span class="font-bold text-slate-800">13 Juni 2026 (17:00 - 20:00)</span>
                     </div>
                 </div>
                 
@@ -736,7 +736,7 @@ function tutupModalResi() {
                     </div>
                  <h3 class="text-base font-bold text-slate-900 mb-2">Nama Belum Diisi</h3>
                  <p class="text-xs text-slate-500 mb-6 leading-relaxed">
-                Silakan ketik Nama Lengkap Anda terlebih dahulu pada kolom identitas untuk melacak resi evaluasi kumulatif!
+                Silakan ketik Nama Lengkap Anda terlebih dahulu pada kolom identitas untuk melacak resi evaluasi kumulatif
                   </p>
                 <button onclick="document.getElementById('modal-nama-kosong-resi').classList.add('hidden')" class="w-full bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98]">
                 Saya Mengerti
